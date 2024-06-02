@@ -6,6 +6,7 @@ import com.narvatov.news_service.dto.response.CommentDTO;
 import com.narvatov.news_service.dto.response.DetailedNewsDTO;
 import com.narvatov.news_service.dto.response.SimpleNewsDTO;
 import com.narvatov.news_service.dto.response.SimpleUserDTO;
+import com.narvatov.news_service.feign.CommentsInterface;
 import com.narvatov.news_service.mapper.MapperKt;
 import com.narvatov.news_service.model.News;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class NewsService {
 
     @Autowired
     private NewsDao dao;
+
+    @Autowired
+    private CommentsInterface commentsInterface;
 
     public List<SimpleNewsDTO> getAll() {
         List<News> news = dao.findAllSortedByDate();
@@ -45,7 +49,8 @@ public class NewsService {
         SimpleUserDTO author = new SimpleUserDTO();
 
         //TODO FUCK FETCH COMMENTS
-        List<CommentDTO> comments = new ArrayList<>();
+//        List<CommentDTO> comments = new ArrayList<>();
+        List<CommentDTO> comments = commentsInterface.getCommentsByNewId(news.getId());
 
         return new DetailedNewsDTO(news, author, comments);
     }
